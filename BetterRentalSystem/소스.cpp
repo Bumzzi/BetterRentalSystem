@@ -12,12 +12,12 @@ int carCount();
 int custCount();
 int rate(int, int);
 void newCustData();
-/*void carData();
+void carData();
 void admin();
-void user();*/
-void menu();/*
+void user();
+void menu();
 void newCarData();
-void delCar();*/
+void delCar();
 void displayCar();
 void existingCust();
 int countUser();
@@ -25,8 +25,8 @@ void readUserPass();
 void availCar();
 int countAvail();
 void dispAvailCar();
-/*void resetAvail();
-void showCarData();*/
+void resetAvail();
+void showCarData();
 
 class car {
 public:
@@ -266,8 +266,8 @@ void newCustData() {
 	ofs.open("Customer.txt", fstream::app);
 	log.open("Log.txt", fstream::app);
 	ofs << endl;
-	ofstream avialTemp;
-	avialTemp.open("availtemp.txt");
+	ofstream availTemp;
+	availTemp.open("availtemp.txt");
 	cout << "\n\n\n\n";
 	cout << endl;
 
@@ -345,4 +345,154 @@ void newCustData() {
 			}
 		}
 	}
+	ofs.close();
+	remove("available.txt");
+	rename("availtemp.txt", "available.txt");
+	cout << "Hours of rent : ";
+	cin >> hour;
+	int j;
+	for (int i = 0; i < carCount(); i++) {
+		if (strcmp(carSelect, rent[i].plate_num) == 0) {
+			j = i;
+			rate(hour, j);
+			log << "\nCAR: " << rent[i].plate_num;
+			log << "\nBRAND: " << rent[i].brand;
+			log << "\nMODEL: " << rent[i].model;
+			log << "\nHOUR: " << hour;
+			log << "\nPAYMENT: " << rate(hour, j);
+		}
+	}
+	cout << "\n\t  |\tPrice for " << hour << " hours of rent : RM ";
+	cout << rate(hour, j);
+
+	log << "\n==========================================================";
+	log.close();
+	availTemp.close();
+	availCar();
+
+	system("CLS");
+	menu();
+}
+
+void newCarData() {
+	ofstream ofs;
+	ofs.open("car rental.txt", fstream::app);
+	ofs << endl;
+	int newCar = carCount() + 1;
+	cout << "\n\n";
+	cout << "\n\t  |\t\t\t\t\t  Please enter the car data below : " << endl;
+
+	cout << "\n\t  |\t\t\t\t\t  Plate Number : ";
+	cin >> ws;
+	cin.getline(rent[newCar].plate_num, 10);
+	ofs << rent[newCar].plate_num;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Brand : ";
+	cin.getline(rent[newCar].brand, 20);
+	ofs << rent[newCar].brand;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Model : ";
+	cin.getline(rent[newCar].model, 20);
+	ofs << rent[newCar].model;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Capacity : ";
+	cin >> rent[newCar].capacity;
+	ofs << rent[newCar].capacity;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Color : ";
+	cin >> ws;
+	cin.getline(rent[newCar].color, 20);
+	ofs << rent[newCar].color;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Rate Per Hour : ";
+	cin >> rent[newCar].rate_per_hour;
+	ofs << rent[newCar].rate_per_hour;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Rate Per 12 Hour : ";
+	cin >> rent[newCar].rate_per_half;
+	ofs << rent[newCar].rate_per_half;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Rate Per 24 Hour : ";
+	cin >> rent[newCar].rate_per_day;
+	ofs << rent[newCar].rate_per_day;
+	ofs << " ";
+
+	cout << "\t  |\t\t\t\t\t  Tranmission (A/M) : ";
+	cin >> ws;
+	cin.getline(rent[newCar].transmission, 6);
+	ofs << rent[newCar].transmission;
+
+	ofs.close();
+	system("cls");
+
+	carData();
+	admin();
+
+}
+
+void availCar() {
+	ifstream ifs;
+	ifs.open("available.txt");
+	int carNum = 0;
+	while (!ifs.eof()) {
+		ifs.getline(avail[carNum].plate_num, 10, ' ');
+		ifs.getline(avail[carNum].brand, 20, ' ');
+		ifs.getline(avail[carNum].model, 20, ' ');
+		ifs >> avail[carNum].capacity;
+		ifs.ignore();
+		ifs.getline(avail[carNum].color, 20, ' ');
+		ifs >> avail[carNum].rate_per_hour;
+		ifs.ignore();
+		ifs >> avail[carNum].rate_per_half;
+		ifs.ignore();
+		ifs >> avail[carNum].rate_per_day;
+		ifs.ignore();
+		ifs.getline(avail[carNum].transmission, 6);
+		carNum++;
+		ifs >> ws;
+	}
+	ifs.close();
+}
+
+void resetAvial() {
+	ofstream ofs;
+	ofs.open("temp2.txt");
+	for (int i = 0; i < carCount(); i++) {
+		ofs << rent[i].plate_num;
+		ofs << " ";
+		ofs << rent[i].brand;
+		ofs << " ";
+		ofs << rent[i].model;
+		ofs << " ";
+		ofs << rent[i].capacity;
+		ofs << " ";
+		ofs << rent[i].color;
+		ofs << " ";
+		ofs << rent[i].rate_per_hour;
+		ofs << " ";
+		ofs << rent[i].rate_per_half;
+		ofs << " ";
+		ofs << rent[i].rate_per_day;
+		ofs << " ";
+		ofs << rent[i].transmission;
+		if(i != carCount()) {
+			ofs << endl;
+		}
+	}
+	ofs.close();
+	remove("available.txt");
+	rename("temp2.txt", "available.txt");
+
+	admin();
+}
+
+void showCarData() {
+
 }
